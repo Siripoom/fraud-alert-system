@@ -110,9 +110,9 @@ function ReportList() {
   const handleSaveEdit = async () => {
     try {
       const values = await editForm.validateFields();
-      console.log("Updating report:", editingReport.report_id, values.status); // Debugging log
+      console.log("Updating report:", editingReport.report_id, values); // Debugging log
 
-      await updateReport(editingReport.report_id, values.status); // ส่งเป็น string ไม่ใช่ object
+      await updateReport(editingReport.report_id, values); // ✅ ส่ง object ที่มีค่าทั้งหมด
 
       message.success("อัปเดตรายงานสำเร็จ");
       setIsEditModalVisible(false);
@@ -208,12 +208,18 @@ function ReportList() {
         />
 
         <Modal
-          title="แก้ไขสถานะรายงาน"
+          title="แก้ไขข้อมูลรายงาน"
           open={isEditModalVisible}
           onCancel={handleCloseEditModal}
           onOk={handleSaveEdit}
         >
           <Form form={editForm} layout="vertical">
+            <Form.Item label="ชื่อบัญชีหรือผู้ขาย" name="fraud_name">
+              <Input />
+            </Form.Item>
+            <Form.Item label="หมายเลขบัญชีธนาคาร" name="fraud_bank_account">
+              <Input />
+            </Form.Item>
             <Form.Item label="สถานะ" name="status">
               <Select>
                 <Select.Option value="pending">Pending</Select.Option>
