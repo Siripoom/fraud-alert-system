@@ -23,9 +23,9 @@ import {
   createReport,
   deleteReport,
   updateReport,
-} from "../../services/reportService";
-import { supabase } from "../../supabaseClient";
-import Navbar from "../../components/Navbar";
+} from "../services/reportService";
+import { supabase } from "../supabaseClient";
+import Navbar from "../components/Navbar";
 
 function ReportList() {
   const [reports, setReports] = useState([]);
