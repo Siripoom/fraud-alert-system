@@ -1,199 +1,153 @@
-import { useState, useEffect } from "react";
-import {
-  Form,
-  Input,
-  Button,
-  message,
-  Table,
-  Popconfirm,
-  Tag,
-  Select,
-} from "antd";
-import {
-  createReport,
-  getReports,
-  updateReport,
-  deleteReport,
-} from "../services/reportService";
+import { useState } from "react";
+import { Form, Input, Button, message, Upload, Row, Col } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { createReport } from "../services/reportService";
 import { supabase } from "../supabaseClient";
+import Nav from "../components/Navbar";
 
 function CreateReport() {
   const [loading, setLoading] = useState(false);
-  const [reports, setReports] = useState([]);
-  const [editingReport, setEditingReport] = useState(null);
   const [form] = Form.useForm();
-  const [user, setUser] = useState(null);
+  const [file, setFile] = useState(null);
 
-  useEffect(() => {
-    fetchReports();
-    fetchUser();
-  }, []);
+  // Function to Upload Image to Supabase Storage
+  const uploadImage = async (file) => {
+    if (!file) {
+      message.error("กรุณาเลือกไฟล์ก่อนอัปโหลด");
+      return null;
+    }
 
-  // ดึงข้อมูลผู้ใช้ปัจจุบัน
-  const fetchUser = async () => {
-    const { data, error } = await supabase.auth.getUser();
+    const fileExt = file.name.split(".").pop(); // ดึงนามสกุลไฟล์
+    const fileName = `${Date.now()}.${fileExt}`; // ตั้งชื่อไฟล์ให้ไม่ซ้ำ
+    const filePath = `uploads/${fileName}`; // จัดเก็บในโฟลเดอร์ uploads/
+
+    // อัปโหลดไฟล์ไปยัง Supabase Storage
+    const { data, error } = await supabase.storage
+      .from("images") // Bucket ชื่อ "images"
+      .upload(filePath, file, {
+        cacheControl: "3600",
+        upsert: false, // ไม่ให้เขียนทับไฟล์เดิม
+      });
+
     if (error) {
-      console.error("Failed to fetch user:", error);
-      return;
+      console.error("❌ อัปโหลดรูปไม่สำเร็จ:", error);
+      message.error("อัปโหลดรูปไม่สำเร็จ!");
+      return null;
     }
-    setUser(data.user);
+
+    // ดึง URL ไฟล์ที่อัปโหลด
+    const { publicUrl } = supabase.storage
+      .from("images")
+      .getPublicUrl(filePath).data;
+    console.log("✅ Uploaded Image URL:", publicUrl);
+
+    return publicUrl; // คืนค่า URL ของรูปที่อัปโหลด
   };
 
-  // ดึงรายงานทั้งหมด
-  const fetchReports = async () => {
-    try {
-      const data = await getReports();
-      setReports(data);
-    } catch (error) {
-      console.error(error);
-      message.error("Failed to fetch reports.");
-    }
-  };
-
-  // ฟังก์ชันเพิ่มหรือแก้ไขรายงาน
+  // Function to handle form submission
   const onFinish = async (values) => {
-    if (!user) {
-      message.error("You must be logged in to submit a report.");
-      return;
-    }
-
     setLoading(true);
     try {
-      if (editingReport) {
-        await updateReport(editingReport.report_id, values.status);
-        message.success("Report updated successfully!");
-      } else {
-        await createReport(user.id, values);
-        message.success("Report submitted successfully!");
+      let imageUrl = null;
+
+      // ตรวจสอบว่า user ได้เลือกไฟล์ก่อนอัปโหลด
+      if (file) {
+        imageUrl = await uploadImage(file);
+        if (!imageUrl) {
+          message.error("เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ");
+          setLoading(false);
+          return;
+        }
       }
-      fetchReports();
-      setEditingReport(null);
+
+      // ส่งข้อมูลไปยังฐานข้อมูล
+      const reportData = { ...values, evidence: imageUrl };
+      await createReport(reportData);
+
+      message.success("รายงานส่งเรียบร้อยแล้ว!");
       form.resetFields();
+      setFile(null);
     } catch (error) {
       console.error(error);
-      message.error("Failed to submit report.");
+      message.error("ส่งรายงานไม่สำเร็จ");
     }
     setLoading(false);
   };
 
-  // เมื่อกดปุ่มแก้ไข
-  const onEdit = (record) => {
-    setEditingReport(record);
-    form.setFieldsValue(record); // ตั้งค่าฟอร์มให้มีค่าจากรายงานที่เลือก
-  };
-
-  // เมื่อกดยกเลิกการแก้ไข
-  const onCancelEdit = () => {
-    setEditingReport(null);
-    form.resetFields();
-  };
-
-  // ฟังก์ชันลบรายงาน
-  const onDelete = async (report_id) => {
-    try {
-      await deleteReport(report_id);
-      message.success("Report deleted successfully!");
-      fetchReports();
-    } catch (error) {
-      console.error(error);
-      message.error("Failed to delete report.");
-    }
-  };
-
-  // คอลัมน์ของตาราง
-  const columns = [
-    { title: "Fraud Name", dataIndex: "fraud_name", key: "fraud_name" },
-    {
-      title: "Bank Account",
-      dataIndex: "fraud_bank_account",
-      key: "fraud_bank_account",
-    },
-    { title: "Description", dataIndex: "description", key: "description" },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag
-          color={
-            status === "approved"
-              ? "green"
-              : status === "rejected"
-              ? "red"
-              : "blue"
-          }
-        >
-          {status.toUpperCase()}
-        </Tag>
-      ),
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record) => (
-        <span>
-          <Button onClick={() => onEdit(record)} style={{ marginRight: 8 }}>
-            Edit
-          </Button>
-          <Popconfirm
-            title="Sure to delete?"
-            onConfirm={() => onDelete(record.report_id)}
-          >
-            <Button type="link" danger>
-              Delete
-            </Button>
-          </Popconfirm>
-        </span>
-      ),
-    },
-  ];
-
   return (
-    <div className="container mx-auto mt-5">
-      <h1 className="text-2xl font-bold">
-        {editingReport ? "Edit Fraud Report" : "Create a Fraud Report"}
-      </h1>
-      <Form
-        layout="vertical"
-        form={form}
-        onFinish={onFinish}
-        initialValues={editingReport || {}}
-      >
-        <Form.Item
-          label="Fraud Name"
-          name="fraud_name"
-          rules={[{ required: true, message: "Please input the fraud name!" }]}
+    <>
+      <Nav />
+      <div style={{ maxWidth: "1000px", margin: "auto", padding: "20px" }}>
+        {/* Page Title */}
+        <div
+          style={{
+            background: "#F5F5F5",
+            padding: "20px",
+            textAlign: "center",
+            fontSize: "24px",
+            fontWeight: "bold",
+          }}
         >
-          <Input />
-        </Form.Item>
-        <Form.Item label="Bank Account" name="fraud_bank_account">
-          <Input />
-        </Form.Item>
-        <Form.Item label="Description" name="description">
-          <Input.TextArea rows={4} />
-        </Form.Item>
-        {editingReport && (
-          <Form.Item label="Status" name="status" rules={[{ required: true }]}>
-            <Select>
-              <Select.Option value="pending">Pending</Select.Option>
-              <Select.Option value="approved">Approved</Select.Option>
-              <Select.Option value="rejected">Rejected</Select.Option>
-            </Select>
-          </Form.Item>
-        )}
-        <Button type="primary" htmlType="submit" loading={loading}>
-          {editingReport ? "Update Report" : "Submit"}
-        </Button>
-        {editingReport && (
-          <Button style={{ marginLeft: 8 }} onClick={onCancelEdit}>
-            Cancel
-          </Button>
-        )}
-      </Form>
+          แจ้งรายงานมิจฉาชีพ
+        </div>
 
-      <h2 className="text-xl font-bold mt-5">Fraud Reports</h2>
-      <Table dataSource={reports} columns={columns} rowKey="report_id" />
-    </div>
+        {/* Form Section */}
+        <Form
+          layout="vertical"
+          form={form}
+          onFinish={onFinish}
+          style={{ marginTop: "20px" }}
+        >
+          {/* Row 1: Name, Bank Account, Upload */}
+          <Row gutter={[16, 16]}>
+            <Col xs={24} md={8}>
+              <Form.Item
+                label="ชื่อบัญชีหรือผู้ขาย"
+                name="fraud_name"
+                rules={[{ required: true, message: "กรุณากรอกชื่อผู้ขาย" }]}
+              >
+                <Input placeholder="ชื่อบัญชีหรือผู้ขาย" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={8}>
+              <Form.Item label="หมายเลขบัญชีธนาคาร" name="fraud_bank_account">
+                <Input placeholder="หมายเลขบัญชีธนาคาร" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={8}>
+              <Form.Item label="หลักฐาน (รูปถ่าย)">
+                <Upload
+                  beforeUpload={(file) => {
+                    setFile(file);
+                    return false; // Prevent automatic upload
+                  }}
+                >
+                  <Button icon={<UploadOutlined />}>อัพโหลด</Button>
+                </Upload>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          {/* Row 2: Fraud Description */}
+          <Form.Item label="รายละเอียดการฉ้อโกง" name="description">
+            <Input.TextArea
+              rows={5}
+              placeholder="กรอกรายละเอียดของการฉ้อโกงที่เกิดขึ้น"
+            />
+          </Form.Item>
+
+          {/* Submit & Cancel Buttons */}
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
+            <Button type="default" style={{ marginRight: "10px" }}>
+              ยกเลิก
+            </Button>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              ส่ง
+            </Button>
+          </div>
+        </Form>
+      </div>
+    </>
   );
 }
 

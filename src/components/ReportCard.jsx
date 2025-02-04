@@ -1,61 +1,112 @@
-import { useState, useEffect } from "react";
-import { Form, Input, Button, message } from "antd";
-import { createReport } from "../services/reportService";
-import { supabase } from "../supabaseClient";
+import { useState } from "react";
+import { Card, Button, Typography, Modal, Image } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 
-function CreateReport() {
-  const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState(null);
+const { Text } = Typography;
 
-  // ดึงข้อมูล User ปัจจุบัน
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data: user } = await supabase.auth.getUser();
-      if (user) setUser(user);
-    };
-    fetchUser();
-  }, []);
+function ReportCard({ report }) {
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const onFinish = async (values) => {
-    if (!user) {
-      message.error("You must be logged in to submit a report");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await createReport(user.id, values);
-      message.success("Report submitted successfully!");
-    } catch (error) {
-      console.error(error);
-      message.error("Failed to submit report.");
-    }
-    setLoading(false);
-  };
+  // Open & Close Modal
+  const showModal = () => setIsModalVisible(true);
+  const handleCancel = () => setIsModalVisible(false);
 
   return (
-    <div className="container mx-auto mt-5">
-      <h1 className="text-2xl font-bold">Create a Fraud Report</h1>
-      <Form layout="vertical" onFinish={onFinish}>
-        <Form.Item
-          label="Fraud Name"
-          name="fraud_name"
-          rules={[{ required: true, message: "Please input the fraud name!" }]}
+    <>
+      {/* Card Component */}
+      <Card
+        style={{
+          borderRadius: "8px",
+          textAlign: "left",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+          border: "1px solid #E0E0E0",
+        }}
+      >
+        {/* User Section */}
+        <div
+          style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
         >
-          <Input />
-        </Form.Item>
-        <Form.Item label="Bank Account" name="fraud_bank_account">
-          <Input />
-        </Form.Item>
-        <Form.Item label="Description" name="description">
-          <Input.TextArea rows={4} />
-        </Form.Item>
-        <Button type="primary" htmlType="submit" loading={loading}>
-          Submit
+          <div
+            style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              background: "#FF4D4F",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: "10px",
+            }}
+          >
+            <UserOutlined style={{ color: "#fff", fontSize: "18px" }} />
+          </div>
+          <Text strong style={{ fontSize: "16px" }}>
+            {report.fraud_name || "ไม่ระบุ"}
+          </Text>
+        </div>
+
+        {/* Report Details */}
+        <p>
+          <Text strong>สินค้า:</Text> {report.fraud_product || "ไม่ระบุ"}
+        </p>
+        <p>
+          <Text strong>รายละเอียด:</Text>{" "}
+          {report.description || "ไม่มีรายละเอียด"}{" "}
+        </p>
+
+        {/* Action Button */}
+        <Button
+          type="primary"
+          block
+          style={{
+            backgroundColor: "#007BFF",
+            border: "none",
+            fontWeight: "bold",
+            fontSize: "14px",
+          }}
+          onClick={showModal} // Open Modal on Click
+        >
+          เพิ่มเติม
         </Button>
-      </Form>
-    </div>
+      </Card>
+
+      {/* Modal for Full Details */}
+      <Modal
+        title="รายละเอียดการฉ้อโกง"
+        open={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        {/* Image Evidence */}
+        {report.evidence ? (
+          <Image
+            width="100%"
+            src={report.evidence}
+            alt="Evidence"
+            style={{ borderRadius: "8px", marginBottom: "10px" }}
+          />
+        ) : (
+          <p style={{ textAlign: "center", color: "#aaa" }}>
+            ไม่มีหลักฐานแนบมา
+          </p>
+        )}
+
+        {/* Text Details */}
+        <p>
+          <Text strong>ชื่อบัญชีหรือผู้ขาย:</Text>{" "}
+          {report.fraud_name || "ไม่ระบุ"}
+        </p>
+        <p>
+          <Text strong>หมายเลขบัญชีธนาคาร:</Text>{" "}
+          {report.fraud_bank_account || "ไม่ระบุ"}
+        </p>
+        <p>
+          <Text strong>รายละเอียด:</Text>{" "}
+          {report.description || "ไม่มีรายละเอียด"}
+        </p>
+      </Modal>
+    </>
   );
 }
 
-export default CreateReport;
+export default ReportCard;
