@@ -2,11 +2,10 @@ import { useState } from "react";
 import { Button, Input, Modal, message } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 import Navbar from "../components/Navbar";
-
+import qr from "../assets/133822.jpg";
 function Donation() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const accountNumber = "610-0-82032-3";
-  const qrCodeImage = "your-qrcode-image-url-here"; // Replace with actual QR code image URL
 
   const copyAccountNumber = () => {
     navigator.clipboard.writeText(accountNumber);
@@ -27,8 +26,16 @@ function Donation() {
         <h1 className="text-2xl font-bold">สนับสนุนเราโดยการโดเนท</h1>
         <p>คุณสามารถบริจาคผ่านเลขบัญชีธนาคารหรือสแกน QR Code ด้านล่าง</p>
 
-        <div style={{ marginTop: "20px", textAlign: "center" }}>
-          <img src={qrCodeImage} alt="QR Code" style={{ width: "200px" }} />
+        <div
+          style={{
+            marginTop: "20px",
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <img src={qr} alt="QR Code" style={{ width: "200px" }} />
           <p>หรือใช้เลขบัญชีธนาคาร : กรุงไทย</p>
           <Input
             value={accountNumber}

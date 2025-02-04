@@ -23,12 +23,12 @@ export const getReportApprove = async () => {
 };
 
 // อัปเดตสถานะของรายงาน
-export const updateReport = async (report_id, status) => {
-  console.log("Updating report:", report_id, status); // Debugging log
+export const updateReport = async (report_id, updatedData) => {
+  console.log("Updating report:", report_id, updatedData); // Debugging log
   try {
     const { data, error } = await supabase
       .from("fraud_reports")
-      .update({ status }) // ✅ ส่งเป็น string เช่น "pending"
+      .update(updatedData) // ✅ ส่ง object ที่มีค่าทั้งหมดที่ต้องการอัปเดต
       .eq("report_id", report_id);
 
     if (error) {
