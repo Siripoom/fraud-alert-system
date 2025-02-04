@@ -1,0 +1,71 @@
+import { useState } from "react";
+import { Button, Input, Modal, message } from "antd";
+import { CopyOutlined } from "@ant-design/icons";
+import Navbar from "../components/Navbar";
+
+function Donation() {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const accountNumber = "610-0-82032-3";
+  const qrCodeImage = "your-qrcode-image-url-here"; // Replace with actual QR code image URL
+
+  const copyAccountNumber = () => {
+    navigator.clipboard.writeText(accountNumber);
+    message.success("คัดลอกเลขบัญชีสำเร็จ!");
+  };
+
+  return (
+    <>
+      <Navbar />
+      <div
+        style={{
+          maxWidth: "600px",
+          margin: "auto",
+          textAlign: "center",
+          padding: "20px",
+        }}
+      >
+        <h1 className="text-2xl font-bold">สนับสนุนเราโดยการโดเนท</h1>
+        <p>คุณสามารถบริจาคผ่านเลขบัญชีธนาคารหรือสแกน QR Code ด้านล่าง</p>
+
+        <div style={{ marginTop: "20px", textAlign: "center" }}>
+          <img src={qrCodeImage} alt="QR Code" style={{ width: "200px" }} />
+          <p>หรือใช้เลขบัญชีธนาคาร : กรุงไทย</p>
+          <Input
+            value={accountNumber}
+            readOnly
+            style={{ width: "250px", textAlign: "center" }}
+          />
+          <Button
+            icon={<CopyOutlined />}
+            onClick={copyAccountNumber}
+            style={{ marginTop: "10px" }}
+          >
+            คัดลอกเลขบัญชี
+          </Button>
+        </div>
+
+        <Button
+          type="primary"
+          style={{ marginTop: "20px" }}
+          onClick={() => setIsModalVisible(true)}
+        >
+          รายละเอียดเพิ่มเติม
+        </Button>
+
+        <Modal
+          title="รายละเอียดการโดเนท"
+          open={isModalVisible}
+          onCancel={() => setIsModalVisible(false)}
+          footer={null}
+        >
+          <p>
+            ขอบคุณสำหรับการสนับสนุนของคุณ!
+            การบริจาคของคุณจะถูกนำไปใช้เพื่อพัฒนาโครงการของเราให้ดียิ่งขึ้น
+          </p>
+        </Modal>
+      </div>
+    </>
+  );
+}
+
+export default Donation;

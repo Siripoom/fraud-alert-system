@@ -1,6 +1,6 @@
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
-
+import logo from "../assets/fraud-detection.png";
 const { Header } = Layout;
 
 function Navbar() {
@@ -18,7 +18,7 @@ function Navbar() {
       {/* Logo and Project Name */}
       <div style={{ display: "flex", alignItems: "center" }}>
         <img
-          src="/logo.png"
+          src={logo}
           alt="logo"
           style={{ width: 32, height: 32, marginRight: 10 }}
         />
@@ -34,6 +34,9 @@ function Navbar() {
         </Menu.Item>
         <Menu.Item key="report">
           <Link to="/create-report">แจ้งรายงานมิจฉาชีพ</Link>
+        </Menu.Item>
+        <Menu.Item key="report">
+          <Link to="/donate">สนับสนุนเรา</Link>
         </Menu.Item>
       </Menu>
     </Header>
