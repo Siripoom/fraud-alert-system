@@ -23,9 +23,9 @@ import {
   createReport,
   deleteReport,
   updateReport,
-} from "../services/reportService";
-import { supabase } from "../supabaseClient";
-import Navbar from "../components/Navbar";
+} from "../../services/reportService";
+import { supabase } from "../../supabaseClient";
+import Navbar from "../../components/Navbar";
 
 function ReportList() {
   const [reports, setReports] = useState([]);
@@ -227,6 +227,39 @@ function ReportList() {
                 <Select.Option value="rejected">Rejected</Select.Option>
               </Select>
             </Form.Item>
+          </Form>
+        </Modal>
+        {/* Login Modal */}
+        <Modal
+          title="เข้าสู่ระบบ"
+          open={isLoginModalVisible}
+          footer={null}
+          closable={false}
+        >
+          <Form form={loginForm} layout="vertical" onFinish={handleLogin}>
+            <Form.Item
+              label="อีเมล"
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  type: "email",
+                  message: "กรุณากรอกอีเมลที่ถูกต้อง",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="รหัสผ่าน"
+              name="password"
+              rules={[{ required: true, message: "กรุณากรอกรหัสผ่าน" }]}
+            >
+              <Input.Password />
+            </Form.Item>
+            <Button type="primary" htmlType="submit" block>
+              เข้าสู่ระบบ
+            </Button>
           </Form>
         </Modal>
       </div>
