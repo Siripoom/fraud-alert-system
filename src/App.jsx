@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Donation from "./pages/Donation";
 
 import CreateReport from "./pages/CreateReport";
-import ReportList from "./pages/admin/ReportList";
+import ReportList from "./pages/ReportList";
 
 function App() {
   return (
