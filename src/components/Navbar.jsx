@@ -35,8 +35,11 @@ function Navbar() {
         <Menu.Item key="report">
           <Link to="/create-report">แจ้งรายงานมิจฉาชีพ</Link>
         </Menu.Item>
-        <Menu.Item key="report">
+        <Menu.Item key="support">
           <Link to="/donate">สนับสนุนเรา</Link>
+        </Menu.Item>
+        <Menu.Item key="contacts">
+          <Link to="/emergency-contacts">รวมเบอร์โทรอายัด</Link>
         </Menu.Item>
       </Menu>
     </Header>
