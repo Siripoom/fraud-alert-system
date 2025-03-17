@@ -91,14 +91,22 @@ function ReportList() {
   };
 
   const handleDelete = async (report_id) => {
-    try {
-      await deleteReport(report_id);
-      message.success("ลบรายงานสำเร็จ");
-      fetchReports();
-    } catch (error) {
-      console.error(error);
-      message.error("ลบรายงานไม่สำเร็จ");
-    }
+    Modal.confirm({
+      title: "ยืนยันการลบ",
+      content: "คุณแน่ใจหรือว่าต้องการลบรายงานนี้?",
+      okText: "ยืนยัน",
+      cancelText: "ยกเลิก",
+      onOk: async () => {
+        try {
+          await deleteReport(report_id);
+          message.success("ลบรายงานสำเร็จ");
+          fetchReports();
+        } catch (error) {
+          console.error(error);
+          message.error("ลบรายงานไม่สำเร็จ");
+        }
+      },
+    });
   };
 
   const editReport = (report) => {

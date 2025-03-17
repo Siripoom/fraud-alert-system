@@ -3,6 +3,7 @@ import { Button, Input, Modal, message } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 import Navbar from "../components/Navbar";
 import qr from "../assets/133822.jpg";
+import line from "../assets/138837.jpg";
 function Donation() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const accountNumber = "610-0-82032-3";
@@ -70,6 +71,18 @@ function Donation() {
             การบริจาคของคุณจะถูกนำไปใช้เพื่อพัฒนาโครงการของเราให้ดียิ่งขึ้น
           </p>
         </Modal>
+        <div
+          style={{
+            marginTop: "20px",
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <img src={line} alt="QR Code" style={{ width: "200px" }} />
+          <p>สอบถามข้อมูลหรือติดต่อเราได้ที่</p>
+        </div>
       </div>
     </>
   );
