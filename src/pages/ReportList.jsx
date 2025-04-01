@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Table,
   Tag,
@@ -17,6 +18,7 @@ import {
   DeleteOutlined,
   UploadOutlined,
   LoginOutlined,
+  ShopOutlined,
 } from "@ant-design/icons";
 import {
   getReports,
@@ -190,13 +192,22 @@ function ReportList() {
         <h1 className="text-2xl font-bold">รายงานมิจฉาชีพ</h1>
         {user && (
           <>
-            <Button
+            {/* <Button
               type="primary"
               icon={<PlusOutlined />}
               onClick={() => setIsAddModalVisible(true)}
             >
               เพิ่มรายงาน
-            </Button>
+            </Button> */}
+            <Link to="/admin/trusted-shops">
+              <Button
+                type="primary"
+                icon={<ShopOutlined />}
+                style={{ marginLeft: 10 }}
+              >
+                ร้านค้าที่ไว้ใจ
+              </Button>
+            </Link>
             <Button
               type="default"
               icon={<LoginOutlined />}

@@ -32,6 +32,9 @@ function Navbar() {
         <Menu.Item key="check">
           <Link to="/">รายงานล่าสุด</Link>
         </Menu.Item>
+        <Menu.Item key="check">
+          <Link to="/trusted-shops">ร้านค้าที่ไว้ใจได้</Link>
+        </Menu.Item>
         <Menu.Item key="report">
           <Link to="/create-report">แจ้งรายงานมิจฉาชีพ</Link>
         </Menu.Item>
