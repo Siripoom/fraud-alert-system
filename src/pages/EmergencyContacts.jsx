@@ -1,31 +1,32 @@
-import { useEffect, useState } from "react";
-import { Row, Col, Card, Typography, Button } from "antd";
+import { Card, Row, Col, Typography, Collapse, Alert, Button } from "antd";
+import { PhoneOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import Navbar from "../components/Navbar";
-import { getTrustedShops } from "../services/reportService";
 
 const { Title, Text } = Typography;
+const { Panel } = Collapse;
 
-function TrustedShops() {
-  const [shops, setShops] = useState([]);
+const emergencyNumbers = [
+  { bank: "ธ.กสิกรไทย", number: "02-888-8888", code: "กด 001" },
+  { bank: "ธ.กรุงเทพ", number: "02-645-5555", code: "กด 3" },
+  { bank: "ธ.กรุงไทย", number: "02-111-1111", code: "กด 008" },
+  { bank: "ธ.กรุงศรี", number: "1572", code: "กด 5" },
+  { bank: "ธ.ทหารไทยธนชาต", number: "1482", code: "กด 03" },
+  { bank: "ธ.ออมสิน", number: "1115", code: "กด 6" },
+  { bank: "ธ.ยูโอบี", number: "02-344-9555", code: "กด 001" },
+  { bank: "ธ.แลนด์ แอนด์ เฮ้าส์", number: "02-359-0000", code: "กด 8" },
+  { bank: "ธ.ธนาคารสงเคราะห์", number: "02-645-9000", code: "กด 33" },
+  { bank: "ธ.เกียรตินาคินภัทร", number: "02-165-5555", code: "กด 6" },
+  { bank: "ธ.เพื่อการเกษตรและสหกรณ์", number: "02-555-0555", code: "กด 3" },
+  { bank: "ธ.ซีไอเอ็มบีไทย", number: "02-626-9000", code: "" },
+  { bank: "ธ.ไทยเครดิต", number: "02-697-5454", code: "" },
+  { bank: "ธ.ไทยพาณิชย์", number: "02-777-7575", code: "" },
+];
 
-  useEffect(() => {
-    fetchShops();
-  }, []);
-
-  const fetchShops = async () => {
-    try {
-      const data = await getTrustedShops(); // Function to fetch trusted shops from your backend
-      setShops(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+function EmergencyContacts() {
   return (
     <>
       <Navbar />
       <div style={{ maxWidth: "1200px", margin: "auto", padding: "20px" }}>
-        {/* Header Section */}
         <div
           style={{
             textAlign: "center",
@@ -36,29 +37,59 @@ function TrustedShops() {
           }}
         >
           <Title level={2} style={{ color: "#FFD700", marginTop: "10px" }}>
-            ร้านค้าที่ไว้ใจได้
+            รวมเบอร์โทรอายัดเงินบัญชีธนาคาร
           </Title>
-          <Text style={{ color: "#FFFFFF" }}>
-            สำรวจร้านค้าที่เชื่อถือได้และสามารถซื้อสินค้าผ่านออนไลน์ได้
-          </Text>
+          <Text style={{ color: "#FFFFFF" }}>กรณีถูกมิจฉาชีพหลอกโอนเงิน</Text>
         </div>
 
-        {/* Shops Section */}
-        <Row gutter={[16, 16]} style={{ marginTop: "20px" }}>
-          {shops.map((shop) => (
-            <Col xs={24} sm={12} md={8} lg={6} key={shop.id}>
+        {/* คำเตือน */}
+        <Alert
+          message="⚠️ 5 สัญญาณเตือน มิจฉาชีพโอนแปะ"
+          description={
+            <ul style={{ margin: 0, paddingLeft: "20px" }}>
+              <li>โทรศัพท์แจ้งเตือนเงินเข้า, ชนะ หมายเลขเปลี่ยนใหม่ทันที</li>
+              <li>มี Pop-ups หรือ Screen Saver แปลก ๆ</li>
+              <li>แจ้งเตือนเงินหายไปทีละจำนวนมาก</li>
+              <li>ลิ้งค์ส่งผ่านแชตปลอมและไม่ถูกกฏหมาย</li>
+              <li>มี SMS นำทางให้คลิกเปลี่ยนเส้นทาง</li>
+            </ul>
+          }
+          type="warning"
+          showIcon
+          style={{ marginTop: "20px" }}
+        />
+        <br />
+        {/* วิธีการป้องกัน */}
+        <Collapse
+          style={{ marginBottom: "20px" }}
+          expandIcon={({ isActive }) => (
+            <ExclamationCircleOutlined rotate={isActive ? 90 : 0} />
+          )}
+        >
+          <Panel header="🔒 วิธีแก้ไขเบื้องต้น" key="1">
+            <ul style={{ margin: 0, paddingLeft: "20px" }}>
+              <li>ออกซิมใหม่ และปิดรับโอนเงินที่ไม่ทราบที่มา</li>
+              <li>ปิดสัญญาณ WiFi ผ่านตัว Router, ตัวเปลี่ยนสัญญาณต่าง ๆ</li>
+            </ul>
+          </Panel>
+        </Collapse>
+
+        {/* รายการเบอร์โทร */}
+        <Row gutter={[16, 16]}>
+          {emergencyNumbers.map((item, index) => (
+            <Col xs={24} sm={12} md={8} lg={6} key={index}>
               <Card
-                hoverable
-                cover={<img alt="product" src={shop.productImages[0]} />}
+                bordered={false}
                 style={{
-                  borderRadius: "12px",
-                  backgroundColor: "#262626",
+                  background: "#262626",
                   color: "white",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  textAlign: "center",
+                  borderRadius: "10px",
+                  padding: "10px",
                 }}
               >
                 <Title
-                  level={4}
+                  level={5}
                   style={{
                     color: "#FFD700",
                     whiteSpace: "nowrap",
@@ -66,41 +97,69 @@ function TrustedShops() {
                     textOverflow: "ellipsis",
                   }}
                 >
-                  {shop.shopName}
+                  {item.bank}
                 </Title>
                 <Text
                   style={{
-                    color: "#F4A300",
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    color: "#FFA500",
                     display: "block",
-                    fontSize: "14px",
-                    marginBottom: "10px",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                   }}
                 >
-                  {shop.description}
+                  <PhoneOutlined /> {item.number}
                 </Text>
+                {item.code && (
+                  <Text
+                    style={{
+                      display: "block",
+                      marginTop: 5,
+                      color: "#FFFFFF",
+                      fontSize: "14px",
+                    }}
+                  >
+                    {item.code}
+                  </Text>
+                )}
                 <Button
                   type="primary"
                   block
                   style={{
+                    marginTop: "10px",
                     background: "#FFD700",
                     border: "none",
                     color: "black",
-                    fontWeight: "bold",
                   }}
-                  onClick={() => window.open(shop.purchaseLink)}
+                  onClick={() => (window.location.href = `tel:${item.number}`)}
                 >
-                  ไปที่ร้าน
+                  โทรเลย
                 </Button>
               </Card>
             </Col>
           ))}
         </Row>
+
+        {/* ส่วนท้าย */}
+        <div style={{ textAlign: "center", marginTop: "20px", color: "white" }}>
+          <Text>สามารถโทรได้ตลอด 24 ชั่วโมง</Text>
+          <br />
+          <Text>
+            สอบถาม ปรึกษา แจ้งเหตุ โทร 1441, 081-866-3000 หรือแจ้งทาง
+            <a
+              href="mailto:createpoliceonline.com"
+              style={{ color: "#FFD700" }}
+            >
+              {" "}
+              createpoliceonline.com
+            </a>
+          </Text>
+        </div>
       </div>
     </>
   );
 }
 
-export default TrustedShops;
+export default EmergencyContacts;
