@@ -7,29 +7,29 @@ const { Title, Text } = Typography;
 
 function TrustedShops() {
   const [shops, setShops] = useState([]);
-  const [filteredShops, setFilteredShops] = useState([]); // สำหรับการกรองข้อมูล
+  const [filteredShops, setFilteredShops] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [searchTerm, setSearchTerm] = useState(""); // สำหรับคำค้นหา
-  const [selectedCategory, setSelectedCategory] = useState(""); // สำหรับหมวดหมู่ร้านค้า
-  const [categories, setCategories] = useState([]); // สำหรับรายการหมวดหมู่ที่ไม่ซ้ำ
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     fetchShops();
   }, []);
 
   useEffect(() => {
-    filterShops(); // ฟังก์ชันกรองร้านค้าเมื่อคำค้นหาหรือหมวดหมู่เปลี่ยน
+    filterShops();
   }, [searchTerm, selectedCategory, shops]);
 
   const fetchShops = async () => {
     try {
-      const data = await getTrustedShops(); // Function to fetch trusted shops from your backend
+      const data = await getTrustedShops();
       setShops(data);
-      setFilteredShops(data); // ตั้งค่าให้ filteredShops มีค่าข้อมูลทั้งหมด
-      const uniqueCategories = [...new Set(data.map((shop) => shop.cat))]; // ดึงหมวดหมู่ที่ไม่ซ้ำกัน
-      setCategories(uniqueCategories); // ตั้งค่าหมวดหมู่ที่ไม่ซ้ำให้กับ state
+      setFilteredShops(data);
+      const uniqueCategories = [...new Set(data.map((shop) => shop.cat))];
+      setCategories(uniqueCategories);
     } catch (error) {
       console.error(error);
     }
@@ -38,14 +38,12 @@ function TrustedShops() {
   const filterShops = () => {
     let filtered = shops;
 
-    // กรองตามคำค้นหา
     if (searchTerm) {
       filtered = filtered.filter((shop) =>
         shop.shop_name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // กรองตามประเภทของร้าน
     if (selectedCategory) {
       filtered = filtered.filter((shop) => shop.cat === selectedCategory);
     }
@@ -53,19 +51,16 @@ function TrustedShops() {
     setFilteredShops(filtered);
   };
 
-  // ฟังก์ชันที่เปิด Modal และแสดงภาพที่เลือก
   const showImagesInModal = (images, index) => {
     setSelectedImages(images);
     setCurrentImageIndex(index);
     setIsModalVisible(true);
   };
 
-  // ฟังก์ชันสำหรับการปิด Modal
   const handleCancel = () => {
     setIsModalVisible(false);
   };
 
-  // ฟังก์ชันสำหรับการเปลี่ยนภาพใน Modal
   const nextImage = () => {
     if (currentImageIndex < selectedImages.length - 1) {
       setCurrentImageIndex(currentImageIndex + 1);
@@ -81,40 +76,79 @@ function TrustedShops() {
   return (
     <>
       <Navbar />
-      <div className="max-w-6xl mx-auto px-6 py-6">
-        <Title level={2} className="text-center mb-6 text-gray-800">
-          ร้านค้าที่ไว้ใจได้
-        </Title>
 
-        {/* ช่องค้นหาด้านบน */}
-        <div className="flex items-center mb-4 space-x-4">
+      {/* Hero Section */}
+      <div
+        style={{
+          backgroundColor: "#8E1616",
+          padding: "20px",
+          textAlign: "center",
+          fontSize: "24px",
+          fontWeight: "bold",
+          color: "#FFFFFF",
+        }}
+      >
+        ร้านค้าที่ไว้ใจได้
+      </div>
+
+      <div className="max-w-6xl mx-auto px-6 py-6">
+        {/* ช่องค้นหาและดรอปดาวน์ */}
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-8">
           <Input
             placeholder="ค้นหาร้านค้า..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-64 p-2 border-2 border-gray-300 rounded-md focus:border-red-500 focus:ring-2 focus:ring-red-500"
+            style={{
+              width: "100%",
+              maxWidth: "720px", // 🔺 ประมาณความยาว 3 การ์ด
+              height: "48px",
+              padding: "0 20px",
+              borderRadius: "999px",
+              fontSize: "16px",
+              border: "2px solid #ccc",
+              transition: "all 0.3s ease-in-out",
+            }}
+            className="focus:border-red-600 focus:ring-2 focus:ring-red-300"
           />
 
-          {/* ตัวเลือกหมวดหมู่ของร้าน */}
           <Select
             placeholder="เลือกประเภทของร้าน"
             value={selectedCategory}
             onChange={(value) => setSelectedCategory(value)}
-            className="w-48 p-2 border-2 border-gray-300 rounded-md focus:border-red-500 focus:ring-2 focus:ring-red-500"
-          >
-            <Select.Option value="">ทั้งหมด</Select.Option>
-            {categories.map((category, index) => (
-              <Select.Option key={index} value={category}>
-                {category}
-              </Select.Option>
-            ))}
-          </Select>
+            style={{
+              width: "100%",
+              maxWidth: "260px",
+              height: "48px",
+              fontSize: "16px",
+              border: "none",
+              boxShadow: "none",
+            }}
+            dropdownStyle={{
+              fontSize: "15px",
+              borderRadius: "6px",
+            }}
+            dropdownMatchSelectWidth={false}
+            options={[
+              { value: "", label: "ทั้งหมด" },
+              ...categories.map((category) => ({
+                value: category,
+                label: category,
+              })),
+            ]}
+          />
         </div>
 
-        {/* การแสดงผลร้านค้า */}
+        {/* การ์ดร้านค้า */}
         <Row gutter={[16, 16]}>
           {filteredShops.map((shop) => (
-            <Col xs={24} sm={12} md={8} lg={6} key={shop.id}>
+            <Col
+              xs={24}
+              sm={12}
+              md={8}
+              lg={6}
+              key={shop.id}
+              style={{ display: "flex" }}
+            >
               <Card
                 hoverable
                 cover={
@@ -126,20 +160,38 @@ function TrustedShops() {
                         : "path_to_placeholder_image"
                     }
                     onClick={() => showImagesInModal(shop.product_images, 0)}
-                    className="cursor-pointer"
+                    className="cursor-pointer object-cover h-48 w-full rounded-t-md"
                   />
                 }
-                className="rounded-lg shadow-md bg-white"
+                className="rounded-lg shadow-md bg-white flex flex-col"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  height: "100%",
+                  width: "100%",
+                }}
               >
-                <Title level={4} className="text-gray-800">
-                  {shop.shop_name}
-                </Title>
-                <Text>{shop.description}</Text>
+                <div className="flex flex-col flex-grow">
+                  <Title
+                    level={4}
+                    style={{ color: "#8E1616", fontWeight: "bold" }}
+                  >
+                    {shop.shop_name}
+                  </Title>
+                  <Text>{shop.description}</Text>
+                </div>
+
                 <Button
                   type="primary"
                   block
                   onClick={() => window.open(shop.purchase_link)}
-                  className="mt-4"
+                  style={{
+                    backgroundColor: "#8E1616",
+                    borderColor: "#8E1616",
+                    fontWeight: "bold",
+                    marginTop: "20px",
+                  }}
                 >
                   ไปที่ร้าน
                 </Button>
@@ -151,7 +203,7 @@ function TrustedShops() {
 
       {/* Modal แสดงภาพสินค้า */}
       <Modal
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={null}
         width={800}
@@ -161,20 +213,31 @@ function TrustedShops() {
           <img
             alt="product"
             src={selectedImages[currentImageIndex]}
-            style={{ width: "100%", height: "auto" }}
+            style={{ width: "100%", height: "auto", borderRadius: "8px" }}
           />
         </div>
-        <div className="mt-4">
+        <div className="mt-4 flex justify-center gap-4">
           <Button
             onClick={prevImage}
             disabled={currentImageIndex === 0}
-            className="mr-2"
+            style={{
+              backgroundColor: "#8E1616",
+              borderColor: "#8E1616",
+              color: "#fff",
+              fontWeight: "bold",
+            }}
           >
             Previous
           </Button>
           <Button
             onClick={nextImage}
             disabled={currentImageIndex === selectedImages.length - 1}
+            style={{
+              backgroundColor: "#8E1616",
+              borderColor: "#8E1616",
+              color: "#fff",
+              fontWeight: "bold",
+            }}
           >
             Next
           </Button>

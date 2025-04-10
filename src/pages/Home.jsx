@@ -20,17 +20,16 @@ function Home() {
     try {
       const data = await getReportApprove();
       setReports(data);
-      setFilteredReports(data); // Initialize filtered list with all reports
+      setFilteredReports(data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  // 🔹 Handle Search Input Change
   const handleSearch = (value) => {
     setSearchTerm(value);
     if (!value) {
-      setFilteredReports(reports); // Reset to all reports when search is empty
+      setFilteredReports(reports);
     } else {
       const filtered = reports.filter((report) => {
         const fraudName = report.fraud_name
@@ -55,19 +54,19 @@ function Home() {
       <Navbar />
       <div
         style={{
-          backgroundColor: "#EEEEEE", // พื้นหลังหลักของหน้าเป็นสีอ่อน
+          backgroundColor: "#EEEEEE",
           minHeight: "100vh",
         }}
       >
         {/* Hero Section */}
         <div
           style={{
-            backgroundColor: "#8E1616", // พื้นหลังของส่วน Hero
+            backgroundColor: "#8E1616",
             padding: "20px",
             textAlign: "center",
             fontSize: "24px",
             fontWeight: "bold",
-            color: "#FFFFFF", // ข้อความสีขาว
+            color: "#FFFFFF",
           }}
         >
           รายงานล่าสุด
@@ -78,34 +77,47 @@ function Home() {
           style={{
             maxWidth: "500px",
             margin: "20px auto",
-            padding: "5px", // ลด padding เพื่อทำให้ช่องค้นหากับปุ่มเป็นบล็อคเดียวกัน
-            borderRadius: "8px", // ทำให้มุมโค้งมน
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // เพิ่มเงาให้สวยงาม
-            backgroundColor: "#fff", // พื้นหลังของช่องค้นหาทั้งหมด
+            padding: "10px",
+            borderRadius: "10px",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            backgroundColor: "#fff",
           }}
         >
-          <Search
-            placeholder="ค้นหาด้วยชื่อบัญชีหรือเลขบัญชี"
-            allowClear
-            enterButton="ค้นหา"
-            size="large"
-            onSearch={handleSearch}
-            style={{
-              borderColor: "#8E1616", // กรอบสีแดงเข้ม
-              borderRadius: "8px", // มุมโค้งมน
-              backgroundColor: "#FFFFFF", // พื้นหลังภายในช่องค้นหาเป็นสีขาว
-              padding: "10px 15px", // เพิ่มขนาด padding เพื่อให้ช่องค้นหากว้างขึ้น
-              boxShadow: "none", // ลบเงาออก
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = "#D84040"; // เมื่อมีการชี้เมาส์ให้กรอบเป็นสีแดงอ่อน
-              e.target.parentNode.style.borderColor = "#D84040"; // เมื่อมีการชี้เมาส์กรอบปุ่มด้วย
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = "#8E1616"; // เมื่อเลิกชี้เมาส์ให้กรอบกลับเป็นสีปกติ
-              e.target.parentNode.style.borderColor = "#8E1616"; // เมื่อเลิกชี้เมาส์ให้กรอบปุ่มกลับเป็นสีปกติ
-            }}
-          />
+         <Search
+  placeholder="ค้นหาด้วยชื่อบัญชีหรือเลขบัญชี"
+  allowClear
+  enterButton={
+    <Button
+      style={{
+        backgroundColor: "#8E1616",
+        borderRadius: "8px",
+        color: "#fff",
+        fontWeight: "bold",
+        padding: "0 24px",
+        height: "40px",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+        transition: "background-color 0.3s ease",
+        border: "none",
+      }}
+      onMouseEnter={(e) =>
+        (e.target.style.backgroundColor = "#D84040")
+      }
+      onMouseLeave={(e) =>
+        (e.target.style.backgroundColor = "#8E1616")
+      }
+    >
+      ค้นหา
+    </Button>
+  }
+  size="large"
+  onSearch={handleSearch}
+  style={{
+    width: "100%",
+  }}
+  className="custom-search"
+/>
+
+
         </div>
 
         {/* Grid for Reports */}

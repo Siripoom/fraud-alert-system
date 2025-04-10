@@ -7,7 +7,6 @@ const { Text } = Typography;
 function ReportCard({ report }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // Open & Close Modal
   const showModal = () => setIsModalVisible(true);
   const handleCancel = () => setIsModalVisible(false);
 
@@ -16,71 +15,83 @@ function ReportCard({ report }) {
       {/* Card Component */}
       <Card
         style={{
-          borderRadius: "12px", // ขอบมุมโค้งมน
+          borderRadius: "12px",
           textAlign: "left",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // เพิ่มเงาให้ Card
-          border: "1px solid #E0E0E0", // กรอบสีอ่อน
-          backgroundColor: "#FFFFFF", // พื้นหลังสีขาว
-          marginBottom: "20px", // เพิ่มระยะห่างระหว่าง Card
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          border: "1px solid #E0E0E0",
+          backgroundColor: "#FFFFFF",
+          marginBottom: "20px",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          paddingBottom: 0, // ปรับเพื่อความพอดี
+        }}
+        bodyStyle={{
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+          padding: "24px",
         }}
       >
-        {/* User Section */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginBottom: "12px", // เพิ่มระยะห่าง
-          }}
-        >
+        {/* Content Block (ขยายเต็มพื้นที่) */}
+        <div style={{ flex: 1 }}>
+          {/* User Section */}
           <div
             style={{
-              width: "45px",
-              height: "45px",
-              borderRadius: "50%",
-              background: "#FF4D4F",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              marginRight: "12px",
+              marginBottom: "12px",
             }}
           >
-            <UserOutlined style={{ color: "#fff", fontSize: "20px" }} />
+            <div
+              style={{
+                width: "45px",
+                height: "45px",
+                borderRadius: "50%",
+                background: "#1D1616",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "12px",
+              }}
+            >
+              <UserOutlined style={{ color: "#fff", fontSize: "20px" }} />
+            </div>
+            <Text strong style={{ fontSize: "18px", color: "#8E1616" }}>
+              {report.fraud_name || "ไม่ระบุ"}
+            </Text>
           </div>
-          <Text strong style={{ fontSize: "18px", color: "#333" }}>
-            {report.fraud_name || "ไม่ระบุ"}
-          </Text>
+
+          {/* Report Details */}
+          <p>
+            <Text strong style={{ color: "#8E1616" }}>สินค้า :</Text>{" "}
+            {report.fraud_product || "ไม่ระบุ"}
+          </p>
+          <p>
+            <Text strong style={{ color: "#8E1616" }}>รายละเอียด :</Text>{" "}
+            {report.description || "ไม่มีรายละเอียด"}
+          </p>
         </div>
 
-        {/* Report Details */}
-        <p>
-          <Text strong style={{ color: "#333" }}>
-            สินค้า:
-          </Text>{" "}
-          {report.fraud_product || "ไม่ระบุ"}
-        </p>
-        <p>
-          <Text strong style={{ color: "#333" }}>
-            รายละเอียด:
-          </Text>{" "}
-          {report.description || "ไม่มีรายละเอียด"}
-        </p>
-
-        {/* Action Button */}
-        <Button
-          type="primary"
-          block
-          style={{
-            backgroundColor: "#D84040", // สีปุ่มค้นหาที่เด่น
-            border: "none",
-            fontWeight: "bold",
-            fontSize: "16px",
-            padding: "12px", // เพิ่มขนาดปุ่ม
-            borderRadius: "8px", // ทำให้ปุ่มมีมุมโค้ง
-          }}
-          onClick={showModal} // Open Modal on Click
-        >
-          เพิ่มเติม
-        </Button>
+        {/* Action Button - ติดขอบล่าง */}
+        <div style={{ paddingTop: "16px" }}>
+          <Button
+            type="primary"
+            block
+            style={{
+              backgroundColor: "#8E1616",
+              border: "none",
+              fontWeight: "bold",
+              fontSize: "16px",
+              padding: "12px",
+              borderRadius: "8px",
+            }}
+            onClick={showModal}
+          >
+            เพิ่มเติม
+          </Button>
+        </div>
       </Card>
 
       {/* Modal for Full Details */}
@@ -103,7 +114,7 @@ function ReportCard({ report }) {
             style={{
               borderRadius: "8px",
               marginBottom: "20px",
-              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)", // เพิ่มเงาให้ภาพ
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
             }}
           />
         ) : (
@@ -114,20 +125,20 @@ function ReportCard({ report }) {
 
         {/* Text Details */}
         <p>
-          <Text strong style={{ color: "#333" }}>
-            ชื่อบัญชีหรือผู้ขาย:
+          <Text strong style={{ color: "#8E1616" }}>
+            ชื่อบัญชีหรือผู้ขาย :
           </Text>{" "}
           {report.fraud_name || "ไม่ระบุ"}
         </p>
         <p>
-          <Text strong style={{ color: "#333" }}>
-            หมายเลขบัญชีธนาคาร:
+          <Text strong style={{ color: "#8E1616" }}>
+            หมายเลขบัญชีธนาคาร :
           </Text>{" "}
           {report.fraud_bank_account || "ไม่ระบุ"}
         </p>
         <p>
-          <Text strong style={{ color: "#333" }}>
-            รายละเอียด:
+          <Text strong style={{ color: "#8E1616" }}>
+            รายละเอียด :
           </Text>{" "}
           {report.description || "ไม่มีรายละเอียด"}
         </p>

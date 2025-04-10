@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Form, Input, Button, message, Upload, Row, Col, Card } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import {
+  UploadOutlined,
+  SendOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 import { createReport } from "../services/reportService";
 import { supabase } from "../supabaseClient";
 import Nav from "../components/Navbar";
@@ -36,7 +40,6 @@ function CreateReport() {
     const { publicUrl } = supabase.storage
       .from("images")
       .getPublicUrl(filePath).data;
-    console.log("✅ Uploaded Image URL:", publicUrl);
     return publicUrl;
   };
 
@@ -93,34 +96,50 @@ function CreateReport() {
               textAlign: "center",
               marginBottom: "30px",
               color: "#1f1f1f",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "10px",
             }}
           >
-            📢 แจ้งรายงานมิจฉาชีพ
+            <ExclamationCircleOutlined style={{ color: "#8E1616", fontSize: "32px" }} />
+            แจ้งรายงานมิจฉาชีพ
           </div>
 
           <Form
             layout="vertical"
             form={form}
             onFinish={onFinish}
-            style={{ marginTop: "10px" }}
+            style={{ marginTop: "10px", fontSize: "16px" }}
           >
             <Row gutter={[24, 16]}>
               <Col xs={24} md={8}>
                 <Form.Item
-                  label="ชื่อบัญชีหรือผู้ขาย"
+                  label={<span style={{ fontSize: "16px", fontWeight: 500 }}>ชื่อบัญชีหรือผู้ขาย</span>}
                   name="fraud_name"
                   rules={[{ required: true, message: "กรุณากรอกชื่อผู้ขาย" }]}
                 >
-                  <Input placeholder="ชื่อบัญชีหรือผู้ขาย" />
+                  <Input
+                    placeholder="ชื่อบัญชีหรือผู้ขาย"
+                    style={{ fontSize: "16px", padding: "10px" }}
+                  />
                 </Form.Item>
               </Col>
               <Col xs={24} md={8}>
-                <Form.Item label="หมายเลขบัญชีธนาคาร" name="fraud_bank_account">
-                  <Input placeholder="หมายเลขบัญชีธนาคาร" />
+                <Form.Item
+                  label={<span style={{ fontSize: "16px", fontWeight: 500 }}>หมายเลขบัญชีธนาคาร</span>}
+                  name="fraud_bank_account"
+                >
+                  <Input
+                    placeholder="หมายเลขบัญชีธนาคาร"
+                    style={{ fontSize: "16px", padding: "10px" }}
+                  />
                 </Form.Item>
               </Col>
               <Col xs={24} md={8}>
-                <Form.Item label="หลักฐาน (รูปถ่าย)">
+                <Form.Item
+                  label={<span style={{ fontSize: "16px", fontWeight: 500 }}>หลักฐาน (รูปถ่าย)</span>}
+                >
                   <Upload
                     beforeUpload={(file) => {
                       setFile(file);
@@ -128,20 +147,35 @@ function CreateReport() {
                     }}
                     showUploadList={file ? [{ name: file.name }] : false}
                   >
-                    <Button icon={<UploadOutlined />}>เลือกไฟล์</Button>
+                    <Button
+                      icon={<UploadOutlined />}
+                      style={{
+                        backgroundColor: "#8E1616",
+                        borderColor: "#8E1616",
+                        color: "#fff",
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        padding: "0 20px",
+                        height: "42px",
+                        borderRadius: "6px",
+                      }}
+                    >
+                      เลือกไฟล์
+                    </Button>
                   </Upload>
                 </Form.Item>
               </Col>
             </Row>
 
             <Form.Item
-              label="รายละเอียดการฉ้อโกง"
+              label={<span style={{ fontSize: "16px", fontWeight: 500 }}>รายละเอียดการฉ้อโกง</span>}
               name="description"
               rules={[{ required: true, message: "กรุณากรอกรายละเอียด" }]}
             >
               <Input.TextArea
                 rows={6}
                 placeholder="กรอกรายละเอียดของการฉ้อโกงที่เกิดขึ้น"
+                style={{ fontSize: "16px", padding: "10px" }}
               />
             </Form.Item>
 
@@ -150,8 +184,9 @@ function CreateReport() {
                 type="default"
                 style={{
                   marginRight: "12px",
-                  padding: "0 30px",
+                  padding: "8px 30px",
                   borderRadius: "6px",
+                  fontSize: "16px",
                 }}
               >
                 ยกเลิก
@@ -160,7 +195,16 @@ function CreateReport() {
                 type="primary"
                 htmlType="submit"
                 loading={loading}
-                style={{ padding: "0 30px", borderRadius: "6px" }}
+                icon={<SendOutlined />}
+                style={{
+                  padding: "8px 30px",
+                  borderRadius: "6px",
+                  backgroundColor: "#8E1616",
+                  borderColor: "#8E1616",
+                  color: "#fff",
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                }}
               >
                 ส่งรายงาน
               </Button>
