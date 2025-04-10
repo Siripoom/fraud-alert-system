@@ -8,6 +8,7 @@ export const addShop = async (shop) => {
       description: shop.description,
       product_images: shop.productImages,
       purchase_link: shop.purchaseLink,
+      cat: shop.cat,
     },
   ]);
   if (error) throw error;
@@ -18,7 +19,7 @@ export const addShop = async (shop) => {
 export const getTrustedShops = async () => {
   const { data, error } = await supabase
     .from("trusted_shops")
-    .select("id, shop_name, description, product_images, purchase_link");
+    .select("id, shop_name, description, product_images, purchase_link,cat");
 
   if (error) throw error;
   return data;
@@ -31,8 +32,8 @@ export const updateShop = async (shopId, shop) => {
     .update({
       shop_name: shop.shopName,
       description: shop.description,
-      product_images: shop.productImages,
       purchase_link: shop.purchaseLink,
+      cat: shop.cat,
     })
     .eq("id", shopId);
   if (error) throw error;

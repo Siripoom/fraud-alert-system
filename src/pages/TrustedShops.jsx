@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Row, Col, Card, Typography, Button, Modal } from "antd";
+import { Row, Col, Card, Typography, Button, Modal, Input, Select } from "antd";
 import Navbar from "../components/Navbar";
 import { getTrustedShops } from "../services/reportService";
 
@@ -7,21 +7,50 @@ const { Title, Text } = Typography;
 
 function TrustedShops() {
   const [shops, setShops] = useState([]);
+  const [filteredShops, setFilteredShops] = useState([]); // สำหรับการกรองข้อมูล
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [searchTerm, setSearchTerm] = useState(""); // สำหรับคำค้นหา
+  const [selectedCategory, setSelectedCategory] = useState(""); // สำหรับหมวดหมู่ร้านค้า
+  const [categories, setCategories] = useState([]); // สำหรับรายการหมวดหมู่ที่ไม่ซ้ำ
 
   useEffect(() => {
     fetchShops();
   }, []);
 
+  useEffect(() => {
+    filterShops(); // ฟังก์ชันกรองร้านค้าเมื่อคำค้นหาหรือหมวดหมู่เปลี่ยน
+  }, [searchTerm, selectedCategory, shops]);
+
   const fetchShops = async () => {
     try {
       const data = await getTrustedShops(); // Function to fetch trusted shops from your backend
       setShops(data);
+      setFilteredShops(data); // ตั้งค่าให้ filteredShops มีค่าข้อมูลทั้งหมด
+      const uniqueCategories = [...new Set(data.map((shop) => shop.cat))]; // ดึงหมวดหมู่ที่ไม่ซ้ำกัน
+      setCategories(uniqueCategories); // ตั้งค่าหมวดหมู่ที่ไม่ซ้ำให้กับ state
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const filterShops = () => {
+    let filtered = shops;
+
+    // กรองตามคำค้นหา
+    if (searchTerm) {
+      filtered = filtered.filter((shop) =>
+        shop.shop_name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // กรองตามประเภทของร้าน
+    if (selectedCategory) {
+      filtered = filtered.filter((shop) => shop.cat === selectedCategory);
+    }
+
+    setFilteredShops(filtered);
   };
 
   // ฟังก์ชันที่เปิด Modal และแสดงภาพที่เลือก
@@ -52,10 +81,39 @@ function TrustedShops() {
   return (
     <>
       <Navbar />
-      <div style={{ maxWidth: "1200px", margin: "auto", padding: "20px" }}>
-        <Title level={2}>ร้านค้าที่ไว้ใจได้</Title>
+      <div className="max-w-6xl mx-auto px-6 py-6">
+        <Title level={2} className="text-center mb-6 text-gray-800">
+          ร้านค้าที่ไว้ใจได้
+        </Title>
+
+        {/* ช่องค้นหาด้านบน */}
+        <div className="flex items-center mb-4 space-x-4">
+          <Input
+            placeholder="ค้นหาร้านค้า..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-64 p-2 border-2 border-gray-300 rounded-md focus:border-red-500 focus:ring-2 focus:ring-red-500"
+          />
+
+          {/* ตัวเลือกหมวดหมู่ของร้าน */}
+          <Select
+            placeholder="เลือกประเภทของร้าน"
+            value={selectedCategory}
+            onChange={(value) => setSelectedCategory(value)}
+            className="w-48 p-2 border-2 border-gray-300 rounded-md focus:border-red-500 focus:ring-2 focus:ring-red-500"
+          >
+            <Select.Option value="">ทั้งหมด</Select.Option>
+            {categories.map((category, index) => (
+              <Select.Option key={index} value={category}>
+                {category}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+
+        {/* การแสดงผลร้านค้า */}
         <Row gutter={[16, 16]}>
-          {shops.map((shop) => (
+          {filteredShops.map((shop) => (
             <Col xs={24} sm={12} md={8} lg={6} key={shop.id}>
               <Card
                 hoverable
@@ -68,23 +126,20 @@ function TrustedShops() {
                         : "path_to_placeholder_image"
                     }
                     onClick={() => showImagesInModal(shop.product_images, 0)}
-                    style={{ cursor: "pointer" }}
+                    className="cursor-pointer"
                   />
                 }
-                style={{
-                  borderRadius: "12px",
-                  backgroundColor: "white", // เปลี่ยนเป็นสีขาว
-                  color: "black",
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                }}
+                className="rounded-lg shadow-md bg-white"
               >
-                <Title level={4}>{shop.shop_name}</Title>
+                <Title level={4} className="text-gray-800">
+                  {shop.shop_name}
+                </Title>
                 <Text>{shop.description}</Text>
                 <Button
                   type="primary"
                   block
                   onClick={() => window.open(shop.purchase_link)}
-                  style={{ marginTop: "10px" }}
+                  className="mt-4"
                 >
                   ไปที่ร้าน
                 </Button>
@@ -109,11 +164,11 @@ function TrustedShops() {
             style={{ width: "100%", height: "auto" }}
           />
         </div>
-        <div style={{ marginTop: "20px" }}>
+        <div className="mt-4">
           <Button
             onClick={prevImage}
             disabled={currentImageIndex === 0}
-            style={{ marginRight: "10px" }}
+            className="mr-2"
           >
             Previous
           </Button>

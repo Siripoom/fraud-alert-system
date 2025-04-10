@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Input, Row, Col, Typography } from "antd";
+import { Input, Row, Col, Typography, Button } from "antd";
 import { getReportApprove } from "../services/reportService";
 import Navbar from "../components/Navbar";
 import ReportCard from "../components/ReportCard";
@@ -53,28 +53,58 @@ function Home() {
   return (
     <>
       <Navbar />
-      <div>
+      <div
+        style={{
+          backgroundColor: "#EEEEEE", // พื้นหลังหลักของหน้าเป็นสีอ่อน
+          minHeight: "100vh",
+        }}
+      >
         {/* Hero Section */}
         <div
           style={{
-            background: "#F5F5F5",
+            backgroundColor: "#8E1616", // พื้นหลังของส่วน Hero
             padding: "20px",
             textAlign: "center",
             fontSize: "24px",
             fontWeight: "bold",
+            color: "#FFFFFF", // ข้อความสีขาว
           }}
         >
           รายงานล่าสุด
         </div>
 
         {/* Search Bar */}
-        <div style={{ maxWidth: "500px", margin: "20px auto" }}>
+        <div
+          style={{
+            maxWidth: "500px",
+            margin: "20px auto",
+            padding: "5px", // ลด padding เพื่อทำให้ช่องค้นหากับปุ่มเป็นบล็อคเดียวกัน
+            borderRadius: "8px", // ทำให้มุมโค้งมน
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // เพิ่มเงาให้สวยงาม
+            backgroundColor: "#fff", // พื้นหลังของช่องค้นหาทั้งหมด
+          }}
+        >
           <Search
             placeholder="ค้นหาด้วยชื่อบัญชีหรือเลขบัญชี"
             allowClear
             enterButton="ค้นหา"
             size="large"
             onSearch={handleSearch}
+            style={{
+              borderColor: "#8E1616", // กรอบสีแดงเข้ม
+              borderRadius: "8px", // มุมโค้งมน
+              backgroundColor: "#FFFFFF", // พื้นหลังภายในช่องค้นหาเป็นสีขาว
+              padding: "10px 15px", // เพิ่มขนาด padding เพื่อให้ช่องค้นหากว้างขึ้น
+              boxShadow: "none", // ลบเงาออก
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = "#D84040"; // เมื่อมีการชี้เมาส์ให้กรอบเป็นสีแดงอ่อน
+              e.target.parentNode.style.borderColor = "#D84040"; // เมื่อมีการชี้เมาส์กรอบปุ่มด้วย
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = "#8E1616"; // เมื่อเลิกชี้เมาส์ให้กรอบกลับเป็นสีปกติ
+              e.target.parentNode.style.borderColor = "#8E1616"; // เมื่อเลิกชี้เมาส์ให้กรอบปุ่มกลับเป็นสีปกติ
+            }}
           />
         </div>
 

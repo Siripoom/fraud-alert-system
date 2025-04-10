@@ -16,42 +16,53 @@ function ReportCard({ report }) {
       {/* Card Component */}
       <Card
         style={{
-          borderRadius: "8px",
+          borderRadius: "12px", // ขอบมุมโค้งมน
           textAlign: "left",
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-          border: "1px solid #E0E0E0",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // เพิ่มเงาให้ Card
+          border: "1px solid #E0E0E0", // กรอบสีอ่อน
+          backgroundColor: "#FFFFFF", // พื้นหลังสีขาว
+          marginBottom: "20px", // เพิ่มระยะห่างระหว่าง Card
         }}
       >
         {/* User Section */}
         <div
-          style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "12px", // เพิ่มระยะห่าง
+          }}
         >
           <div
             style={{
-              width: "40px",
-              height: "40px",
+              width: "45px",
+              height: "45px",
               borderRadius: "50%",
               background: "#FF4D4F",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              marginRight: "10px",
+              marginRight: "12px",
             }}
           >
-            <UserOutlined style={{ color: "#fff", fontSize: "18px" }} />
+            <UserOutlined style={{ color: "#fff", fontSize: "20px" }} />
           </div>
-          <Text strong style={{ fontSize: "16px" }}>
+          <Text strong style={{ fontSize: "18px", color: "#333" }}>
             {report.fraud_name || "ไม่ระบุ"}
           </Text>
         </div>
 
         {/* Report Details */}
         <p>
-          <Text strong>สินค้า:</Text> {report.fraud_product || "ไม่ระบุ"}
+          <Text strong style={{ color: "#333" }}>
+            สินค้า:
+          </Text>{" "}
+          {report.fraud_product || "ไม่ระบุ"}
         </p>
         <p>
-          <Text strong>รายละเอียด:</Text>{" "}
-          {report.description || "ไม่มีรายละเอียด"}{" "}
+          <Text strong style={{ color: "#333" }}>
+            รายละเอียด:
+          </Text>{" "}
+          {report.description || "ไม่มีรายละเอียด"}
         </p>
 
         {/* Action Button */}
@@ -59,10 +70,12 @@ function ReportCard({ report }) {
           type="primary"
           block
           style={{
-            backgroundColor: "#007BFF",
+            backgroundColor: "#D84040", // สีปุ่มค้นหาที่เด่น
             border: "none",
             fontWeight: "bold",
-            fontSize: "14px",
+            fontSize: "16px",
+            padding: "12px", // เพิ่มขนาดปุ่ม
+            borderRadius: "8px", // ทำให้ปุ่มมีมุมโค้ง
           }}
           onClick={showModal} // Open Modal on Click
         >
@@ -76,6 +89,10 @@ function ReportCard({ report }) {
         open={isModalVisible}
         onCancel={handleCancel}
         footer={null}
+        style={{
+          padding: "20px",
+          borderRadius: "12px",
+        }}
       >
         {/* Image Evidence */}
         {report.evidence ? (
@@ -83,7 +100,11 @@ function ReportCard({ report }) {
             width="100%"
             src={report.evidence}
             alt="Evidence"
-            style={{ borderRadius: "8px", marginBottom: "10px" }}
+            style={{
+              borderRadius: "8px",
+              marginBottom: "20px",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)", // เพิ่มเงาให้ภาพ
+            }}
           />
         ) : (
           <p style={{ textAlign: "center", color: "#aaa" }}>
@@ -93,15 +114,21 @@ function ReportCard({ report }) {
 
         {/* Text Details */}
         <p>
-          <Text strong>ชื่อบัญชีหรือผู้ขาย:</Text>{" "}
+          <Text strong style={{ color: "#333" }}>
+            ชื่อบัญชีหรือผู้ขาย:
+          </Text>{" "}
           {report.fraud_name || "ไม่ระบุ"}
         </p>
         <p>
-          <Text strong>หมายเลขบัญชีธนาคาร:</Text>{" "}
+          <Text strong style={{ color: "#333" }}>
+            หมายเลขบัญชีธนาคาร:
+          </Text>{" "}
           {report.fraud_bank_account || "ไม่ระบุ"}
         </p>
         <p>
-          <Text strong>รายละเอียด:</Text>{" "}
+          <Text strong style={{ color: "#333" }}>
+            รายละเอียด:
+          </Text>{" "}
           {report.description || "ไม่มีรายละเอียด"}
         </p>
       </Modal>
