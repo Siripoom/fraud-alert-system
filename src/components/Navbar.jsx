@@ -72,6 +72,13 @@ function Navbar() {
         >
           <Link to="/emergency-contacts">รวมเบอร์โทรอายัด</Link>
         </Menu.Item>
+        <Menu.Item
+          key="dropshipping-guide"
+          style={{ color: "#fff" }}
+          className="nav-item"
+        >
+          <Link to="/dropshipping-guide">คู่มือ Dropshipping</Link>
+        </Menu.Item>
       </Menu>
     </Header>
   );

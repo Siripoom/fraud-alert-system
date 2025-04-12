@@ -7,6 +7,7 @@ import CreateReport from "./pages/CreateReport";
 import ReportList from "./pages/ReportList";
 import TrustedShopForm from "./pages/TrustedShopForm";
 import TrustedShops from "./pages/TrustedShops";
+import DropshippingGuide from "./pages/DropshippingGuide";
 function App() {
   return (
     <Router>
@@ -19,7 +20,7 @@ function App() {
         <Route path="/create-report" element={<CreateReport />} />
         <Route path="/donate" element={<Donation />} />
         <Route path="/emergency-contacts" element={<EmergencyContacts />} />
-
+        <Route path="/dropshipping-guide" element={<DropshippingGuide />} />
         {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
     </Router>
